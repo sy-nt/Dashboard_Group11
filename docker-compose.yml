@@ -1,21 +1,58 @@
 version: '3.9'
 
 services:
-
- db:
-    image: postgres:14.1-alpine
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dbs-api
+    container_name: dbs-api
     restart: always
+    tty: true
+    volumes:
+      - ./:/dbs-api
+    ports:
+      - '4000:3000'
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB= dbs-db
+      DB_HOST: dbs-db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: dbs-db
+      DB_PORT: 5432
+    depends_on:
+      - db
+
+    networks:
+      - mynetwork
+  db:
+    image: postgres:14.1-alpine
+    container_name: dbs-db
+    restart: always
+    tty: true
+    env_file:
+      - docker.env
     ports:
       - '8432:5432'
-    volumes: 
-       - postgres-data:/var/lib/postgresql/data
-volumes:
-  postgres-data:
+    volumes:
+      - dbs-db:/var/lib/postgresql/data
+    networks:
+      - mynetwork
 
+  pgadmin:
+    image: dpage/pgadmin4:6.18
+    networks:
+      - mynetwork
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    env_file:
+      - docker.env
+volumes:
+  dbs-db:
+    driver: local
+  pgadmin:
 
 networks:
   mynetwork:
+    driver: bridge

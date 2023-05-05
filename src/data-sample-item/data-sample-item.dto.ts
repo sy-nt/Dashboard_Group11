@@ -22,3 +22,8 @@ export class DataSampleItemDto {
   @IsNotEmpty()
   predict_result: number[];
 }
+
+export class DataSampleItemAnalysisDto{
+  name:string;
+  data:string|number;
+}
