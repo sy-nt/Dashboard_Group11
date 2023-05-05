@@ -4,9 +4,10 @@
             "previewLimit": 50,
             "server": "localhost",
             "port": 8432,
+            "askForPassword": true,
             "driver": "PostgreSQL",
             "name": "dbs_db",
-            "database": "postgres",
+            "database": "dbs-db",
             "username": "postgres"
         }
     ]

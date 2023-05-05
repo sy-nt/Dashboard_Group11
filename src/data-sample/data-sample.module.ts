@@ -7,11 +7,10 @@ import { DataSampleEntity } from './data-sample.entity';
 import { DataSampleItemEntity } from 'src/data-sample-item/data-sample-Item.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([DataSampleEntity]),
-    TypeOrmModule.forFeature([DataSampleItemEntity]),
-  ],
+  imports: [TypeOrmModule.forFeature([DataSampleEntity]),TypeOrmModule.forFeature([DataSampleItemEntity])],
   controllers: [DataSampleController],
-  providers: [DataSampleService],
+  providers: [
+    DataSampleService,
+  ],
 })
 export class DataSampleModule {}

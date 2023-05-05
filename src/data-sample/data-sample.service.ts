@@ -1,12 +1,13 @@
 /* eslint-disable prefer-const */
 import { DataSampleItemDto } from './../data-sample-item/data-sample-item.dto';
-import { DataSampleDto, getDataSampleFilterDto } from './data-sample.dto';
+import { DataSampleDto, ESort, getDataSampleFilterDto } from './data-sample.dto';
 import { DataSampleItemEntity } from 'src/data-sample-item/data-sample-Item.entity';
 import { DataSampleEntity } from './data-sample.entity';
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  OnModuleInit,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Like, Repository } from 'typeorm';
@@ -14,17 +15,21 @@ import { plainToClass, plainToInstance } from 'class-transformer';
 import * as fs from 'fs';
 import dataSample from '../../data/data.json';
 import * as v4 from 'uuidv4';
-import { format } from 'date-fns';
+import { PaginationDto } from '@/paginate/paginate.dto';
 @Injectable()
-export class DataSampleService {
+export class DataSampleService implements OnModuleInit{
   private data: any;
   constructor(
     @InjectRepository(DataSampleEntity)
     private readonly dataSampleRepository: Repository<DataSampleEntity>,
     @InjectRepository(DataSampleItemEntity)
     private readonly dataSampleItemRepository: Repository<DataSampleItemEntity>,
+    
   ) {
     this.data = dataSample;
+  }
+  onModuleInit(){
+    this.create()
   }
   async create(): Promise<DataSampleDto> {
     for (const [qnh, data] of Object.entries(dataSample)) {
@@ -57,23 +62,40 @@ export class DataSampleService {
       },
     );
   }
-  async getListData(): Promise<DataSampleDto[]> {
-    const items = await this.dataSampleRepository.find();
-    return items;
+  async getListData(paginate:PaginationDto): Promise<DataSampleDto[]> {
+    const { page = 1, limit = 10 } = paginate;
+
+    const [data, count] = await this.dataSampleRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return data;
   }
   async getListDataByFilter(
     filterDto: getDataSampleFilterDto,
+    paginateDto: PaginationDto
   ): Promise<DataSampleDto[]> {
     const { search, sort } = filterDto;
-    const dataAfterFilter = await this.dataSampleRepository.find({
-      where: {
-        name_data: Like(`%${search}%`),
-      },
-      order: {
-        name_data: sort as 'ASC' | 'DESC',
-      },
-    });
-    return dataAfterFilter.map((item) => plainToClass(DataSampleDto, item));
+    const { page = 1, limit = 10 } = paginateDto;
+    const query = this.dataSampleRepository.createQueryBuilder('data_sample');
+     if (search) {
+      query.andWhere('data_sample.name_data LIKE :name_data', { name_data: `%${search}%` });
+    }
+    // const dataAfterFilter = await this.dataSampleRepository.find({
+    //   where: {
+    //     name_data: Like(`%${search}%`),
+    //   },
+    //   order: {
+    //     name_data: sort as 'ASC' | 'DESC',
+    //   },
+    // });
+    const [data, count] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .orderBy('data_sample.name_data', ESort[sort])
+      .getManyAndCount();
+    return data.map((item) => plainToClass(DataSampleDto, item));
   }
   async getAllItemsByDataSample(resId: string): Promise<DataSampleItemDto[]> {
     const isValidUuid = v4.isUuid(resId);

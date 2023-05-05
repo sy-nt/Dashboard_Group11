@@ -6,6 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { E_status } from './data-sample-item.dto';
 @Entity({
   name: 'dbs_item',
 })
@@ -22,7 +23,7 @@ export class DataSampleItemEntity {
   angle_id: number;
   @Column({
     type: 'enum',
-    enum: ['ok', 'fail'],
+    enum: E_status,
   })
   status: 'ok';
   @Column({

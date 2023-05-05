@@ -5,8 +5,8 @@ import { DataSampleItemEntity } from './data-sample-Item.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([DataSampleItemEntity])],
+  imports:[TypeOrmModule.forFeature([DataSampleItemEntity])],
   providers: [DataSampleItemService],
-  controllers: [DataSampleItemController],
+  controllers: [DataSampleItemController]
 })
 export class DataSampleItemModule {}
