@@ -3,7 +3,7 @@ import { request } from "http";
 import Cookies from "js-cookie";
 import { getSession, signOut } from 'next-auth/react';
 const axiosClient = axios.create({
-    baseURL:"http://localhost:4000",
+    baseURL:"http://34.236.146.54:4000",
     headers:{
         "Content-Type": "application/json",
     }
