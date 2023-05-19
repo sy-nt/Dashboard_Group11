@@ -23,7 +23,11 @@ export class DataSampleItemDto {
   predict_result: number[];
 }
 
-export class DataSampleItemAnalysisDto{
+export type T_Analysis = {
   name:string;
-  data:string|number;
+  data:number
+}
+export class DataSampleItemAnalysisDto{
+  status:T_Analysis[];
+  predict: Map<string, number>;
 }

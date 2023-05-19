@@ -11,9 +11,9 @@ import { JwtAuthGuard } from '@/auth/guards/jwt.guard';
 @Controller('data-sample-item')
 export class DataSampleItemController {
   constructor(private readonly dataSampleItemService: DataSampleItemService) {}
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get('analytics')
-  async getDataAnalytics(): Promise<DataSampleItemAnalysisDto[]> {
+  async getDataAnalytics(): Promise<DataSampleItemAnalysisDto> {
     try {
       return await this.dataSampleItemService.getDataAnalytics();
     } catch (err) {

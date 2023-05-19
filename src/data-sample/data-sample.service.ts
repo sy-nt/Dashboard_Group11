@@ -104,14 +104,7 @@ export class DataSampleService implements OnModuleInit {
         name_data: `%${search}%`,
       });
     }
-    // const dataAfterFilter = await this.dataSampleRepository.find({
-    //   where: {
-    //     name_data: Like(`%${search}%`),
-    //   },
-    //   order: {
-    //     name_data: sort as 'ASC' | 'DESC',
-    //   },
-    // });
+   
     const [data, count] = await query
       .skip((page - 1) * limit)
       .take(limit)

@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { E_status } from './data-sample-item.dto';
+import { PredictCountEntity } from '@/predict-count/predict-count.entity';
 @Entity({
   name: 'dbs_item',
 })
@@ -37,3 +38,5 @@ export class DataSampleItemEntity {
   )
   dataSample: DataSampleEntity;
 }
+
+

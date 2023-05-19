@@ -13,6 +13,8 @@ import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { PredictCountModule } from './predict-count/predict-count.module';
+import { PredictCountEntity } from './predict-count/predict-count.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -26,7 +28,7 @@ import { PassportModule } from '@nestjs/passport';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [DataSampleEntity, DataSampleItemEntity, UsersEntity],
+        entities: [DataSampleEntity, DataSampleItemEntity, UsersEntity, PredictCountEntity],
         synchronize: true,
       }),
       inject: [ConfigService],
@@ -37,6 +39,7 @@ import { PassportModule } from '@nestjs/passport';
     DataSampleItemModule,
     AuthModule,
     UsersModule,
+    PredictCountModule,
   ],
   controllers: [AppController],
   providers: [AppService],
