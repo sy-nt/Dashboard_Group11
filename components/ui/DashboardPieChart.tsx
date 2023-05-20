@@ -24,11 +24,11 @@ const DashboardPieChart = () => {
             variant="pie"
             colors={["blue", "gray"]}
           />
-          <Legend
+          {data?.status&&<Legend
             className="mt-3"
-            categories={data.status.map((data=>data.name))}
+            categories={data?.status.map((data=>data.name))}
             colors={["blue", "gray"]}
-          />
+          />}
         </>
       )}
     </Card>

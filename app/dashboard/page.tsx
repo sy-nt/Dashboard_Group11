@@ -137,7 +137,7 @@ const DataSample = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {data?.data.map((item: I_DataSample, index: number) => (
+                {data?.data?.map((item: I_DataSample, index: number) => (
                   <Tr key={index}>
                     <Td>
                       {Number(pageLimit) * (Number(pageIndex) - 1) + index + 1}
@@ -189,7 +189,7 @@ const DataSample = () => {
                 color="blue.500"
                 aria-label="Call Sage"
                 fontSize="20px"
-                isDisabled={data?.meta.last_page.toString() === pageIndex}
+                isDisabled={data?.meta?.last_page.toString() === pageIndex}
                 onClick={() =>
                   handleChangePageIndex((parseInt(pageIndex) + 1).toString())
                 }

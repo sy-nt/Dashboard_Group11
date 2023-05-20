@@ -20,6 +20,7 @@ const DashboardBarChart = () => {
         })
         ;
       }
+      dataTmp.sort((a,b)=> Number(a.name)-Number(b.name))
       setChartData(dataTmp)
     }
   }, [data]);

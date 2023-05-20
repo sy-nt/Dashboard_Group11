@@ -25,13 +25,13 @@ ChartJS.register(
 
 
 export function ChartApp({ChartData}:any) {
-  const labels = ChartData.map((value:number)=> value.toString());
+  const labels = ChartData?.map((value:number)=> value.toString());
   const data = {
     labels,
     datasets: [
       {
         label: 'Dataset 1',
-        data: ChartData.map((value:number)=> value),
+        data: ChartData?.map((value:number)=> value),
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
     ],
