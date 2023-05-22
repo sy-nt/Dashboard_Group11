@@ -16,17 +16,12 @@ import { PassportModule } from '@nestjs/passport';
 import { PredictCountModule } from './predict-count/predict-count.module';
 import { PredictCountEntity } from './predict-count/predict-count.entity';
 import { configuration } from '../configuration';
-import { CorsModule } from '@nestjs/cors';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
        envFilePath: `${process.cwd()}/env/.env.${process.env.NODE_ENV}`,
-       load:[configuration],
-    }),
-    CorsModule.forRoot({
-      origin: ['http://44.211.174.149:3000'], // Add your frontend URL here
-      credentials: true, // Set this to true if you need to pass cookies or authorization headers
+        load:[configuration],
     }),
     DataSampleModule,
     DataSampleItemModule,
