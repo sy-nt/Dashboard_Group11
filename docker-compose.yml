@@ -17,6 +17,7 @@ services:
       - NODE_ENV=${NODE_ENV}
     depends_on:
       - db
+    command: sh -c 'if [ "$NODE_ENV" = "production" ]; then npm run start; else echo "API service disabled in non-production mode."; fi'
 
     networks:
       - mynetwork
@@ -41,7 +42,7 @@ services:
     networks:
       - mynetwork
     ports:
-      - "8080:80"
+      - '8080:80'
     volumes:
       - pgadmin:/var/lib/pgadmin
     env_file:

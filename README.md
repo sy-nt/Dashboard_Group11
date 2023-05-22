@@ -74,7 +74,7 @@ Nest is [MIT licensed](LICENSE).
 
 how to run:
 
-- dev: docker-compose --env-file env/.env.development up --build
-- production : docker-compose --env-file env/.env.production up --build
+- dev: docker-compose --env-file env/.env.development up --build -d
+- production : docker-compose --env-file env/.env.production up --build -d
 - uat : docker-compose --env-file env/.env.uat up --build
 
