@@ -4,9 +4,11 @@ import { ValidationPipe } from '@nestjs/common';
 // import session, * as sessions from 'express-session';
 // import  passport from 'passport';
 import cookieParser from 'cookie-parser';
+
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import passport from 'passport';
 import { JwtStrategy } from './auth/strategy/jwt.strategy';
+import { ConfigService } from '@nestjs/config';
 declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,9 +17,10 @@ async function bootstrap() {
     module.hot.accept();
     module.hot.dispose(() => app.close());
   }
+  const configService = app.get(ConfigService)
   app.enableCors();
   app.use(passport.initialize());
   app.use(cookieParser());
-  await app.listen(3000);
+  await app.listen(4000);
 }
 bootstrap();

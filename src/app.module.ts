@@ -15,9 +15,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { PredictCountModule } from './predict-count/predict-count.module';
 import { PredictCountEntity } from './predict-count/predict-count.entity';
+import { configuration } from '../configuration';
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+       envFilePath: `${process.cwd()}/env/.env.${process.env.NODE_ENV}`,
+       load:[configuration],
+    }),
     DataSampleModule,
     DataSampleItemModule,
     TypeOrmModule.forRootAsync({
@@ -28,7 +33,12 @@ import { PredictCountEntity } from './predict-count/predict-count.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [DataSampleEntity, DataSampleItemEntity, UsersEntity, PredictCountEntity],
+        entities: [
+          DataSampleEntity,
+          DataSampleItemEntity,
+          UsersEntity,
+          PredictCountEntity,
+        ],
         synchronize: true,
       }),
       inject: [ConfigService],
@@ -44,4 +54,5 @@ import { PredictCountEntity } from './predict-count/predict-count.entity';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+}

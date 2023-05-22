@@ -1,4 +1,4 @@
-import { PaginationDto } from '@/paginate/paginate.dto';
+import { PaginationDto } from '@/data-sample/paginate/paginate.dto';
 import { DataSampleItemDto } from './../data-sample-item/data-sample-item.dto';
 import { Expose, Type } from 'class-transformer';
 import {
@@ -41,4 +41,9 @@ export class DataSampleResDto {
     page: number;
     last_page: number;
   };
+}
+
+export class DataSampleAnalysisDto{
+  name: string;
+  value:number;
 }

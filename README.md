@@ -72,10 +72,9 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](LICENSE).
 
-
 how to run:
-docker-compose up --build -d
-use postman call this api:
-- localhost:3000/data-sample/data
 
-- npm start
+- dev: docker-compose --env-file env/.env.development up --build
+- production : docker-compose --env-file env/.env.production up --build
+- uat : docker-compose --env-file env/.env.uat up --build
+

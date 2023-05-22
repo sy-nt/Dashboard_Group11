@@ -1,6 +1,7 @@
 /* eslint-disable prefer-const */
 import { DataSampleItemDto } from './../data-sample-item/data-sample-item.dto';
 import {
+  DataSampleAnalysisDto,
   DataSampleDto,
   DataSampleResDto,
   ESort,
@@ -15,12 +16,13 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, Like, Repository } from 'typeorm';
+import { FindOneOptions, Like, QueryFailedError, Repository } from 'typeorm';
 import { plainToClass, plainToInstance } from 'class-transformer';
 import * as fs from 'fs';
 import dataSample from '../../data/data.json';
 import * as v4 from 'uuidv4';
-import { PaginationDto } from '@/paginate/paginate.dto';
+import { PaginationDto } from '@/data-sample/paginate/paginate.dto';
+import { DateRangeDto } from './dateRange/date-range.dto';
 @Injectable()
 export class DataSampleService implements OnModuleInit {
   private data: any;
@@ -75,49 +77,80 @@ export class DataSampleService implements OnModuleInit {
       },
     );
   }
-  async getListData(paginate: PaginationDto): Promise<DataSampleResDto> {
+  async getListData(
+    paginate: PaginationDto,
+    dateRangeDto: DateRangeDto,
+  ): Promise<DataSampleResDto> {
     const { page = 1, limit = 10 } = paginate;
+    const { dateStart, dateEnd } = dateRangeDto;
 
-    const [data, count] = await this.dataSampleRepository.findAndCount({
-      skip: (page - 1) * limit,
-      take: limit,
-    });
-
-    return {
-      data: data,
-      meta: {
-        total: count,
-        page: page,
-        last_page: Math.ceil(count / limit),
-      },
-    };
+    const query = this.dataSampleRepository.createQueryBuilder('data_sample');
+     if (dateStart && dateEnd) {
+      query;
+      // .leftJoinAndSelect('data_sample.dataSampleItemsDto', 'item').where('item.date >= :startDate AND item.date <= :endDate', { startDate: dateStart, endDate: dateEnd })
+    }
+    try {
+      const [data, count] = await query
+        .skip((page - 1) * limit)
+        .take(limit)
+        .orderBy('data_sample.name_data', ESort['asc'])
+        .getManyAndCount();
+      return {
+        data: data,
+        meta: {
+          total: count,
+          page: page,
+          last_page: Math.ceil(count / limit),
+        },
+      };
+      // Process the query result
+    } catch (error) {
+      // Handle the error
+      throw new QueryFailedError(query.getSql(), [], error);
+    }
   }
   async getListDataByFilter(
     filterDto: getDataSampleFilterDto,
     paginateDto: PaginationDto,
-  ): Promise<DataSampleResDto> {
+    dateRangeDto: DateRangeDto,
+  ): Promise<any> {
     const { search, sort } = filterDto;
     const { page = 1, limit = 10 } = paginateDto;
+    const { dateStart, dateEnd } = dateRangeDto;
     const query = this.dataSampleRepository.createQueryBuilder('data_sample');
+    if (dateStart && dateEnd) {
+      query
+        .leftJoinAndSelect('data_sample.dataSampleItemsDto', 'item')
+        .where('item.date BETWEEN :dateStart AND :dateEnd', {
+          dateStart,
+          dateEnd,
+        });
+    }
     if (search) {
       query.andWhere('data_sample.name_data LIKE :name_data', {
         name_data: `%${search}%`,
       });
     }
-   
-    const [data, count] = await query
-      .skip((page - 1) * limit)
-      .take(limit)
-      .orderBy('data_sample.name_data', ESort[sort])
-      .getManyAndCount();
-    return {
-      data: data,
-      meta: {
-        total: count,
-        page: page,
-        last_page: Math.ceil(count / limit),
-      },
-    };
+
+    try {
+      const [data, count] = await query
+        .skip((page - 1) * limit)
+        .take(limit)
+        .orderBy('data_sample.name_data', ESort[sort])
+        .getManyAndCount();
+      return {
+        data: data,
+        meta: {
+          total: count,
+          page: page,
+          last_page: Math.ceil(count / limit),
+        },
+      };
+      // Process the query result
+    } catch (error) {
+      // Handle the error
+      throw new QueryFailedError(query.getSql(), [], error);
+    }
   }
   async getAllItemsByDataSample(resId: string): Promise<DataSampleItemDto[]> {
     const isValidUuid = v4.isUuid(resId);
@@ -169,5 +202,22 @@ export class DataSampleService implements OnModuleInit {
     return dataSample.dataSampleItemsDto.map((item) =>
       plainToClass(DataSampleItemDto, item),
     );
+  }
+
+  async getDataSampleAnalysis(): Promise<DataSampleAnalysisDto> {
+    try {
+      const query = this.dataSampleRepository.createQueryBuilder('data_sample');
+      const [data, count] = await query
+        .andWhere('data_sample.name_data LIKE :name_data', {
+          name_data: `%/HO`,
+        })
+        .getManyAndCount();
+      return {
+        name: '/HO',
+        value: count,
+      };
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
   }
 }

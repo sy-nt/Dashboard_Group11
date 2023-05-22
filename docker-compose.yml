@@ -12,13 +12,9 @@ services:
     volumes:
       - ./:/dbs-api
     ports:
-      - '4000:3000'
+      - '6000:4000'
     environment:
-      DB_HOST: dbs-db
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: dbs-db
-      DB_PORT: 5432
+      - NODE_ENV=${NODE_ENV}
     depends_on:
       - db
 
@@ -26,11 +22,13 @@ services:
       - mynetwork
   db:
     image: postgres:14.1-alpine
-    container_name: dbs-db
+    container_name: ${DB_NAME}
     restart: always
     tty: true
-    env_file:
-      - docker.env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_USERNAME}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - '8432:5432'
     volumes:
