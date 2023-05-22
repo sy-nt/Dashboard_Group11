@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-no-undef */
 import Providers from "@/app/Providers";
-import { SessionProvider } from "next-auth/react";
 export interface I_props {
   children: React.ReactNode;
 }

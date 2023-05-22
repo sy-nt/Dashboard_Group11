@@ -1,7 +1,9 @@
+import { error } from 'console';
 import { I_DataSample } from '@/models';
 import { I_filterData } from './../models/filterDataInput';
 import axiosClient from './axiosClient';
 import { I_Signup } from '@/models/auth';
+import {MyCustomError} from "@/models/error"
 export const AuthApi = {
     async signup(payload?:I_Signup){
         let url:string = "/auth/signup";
@@ -10,8 +12,15 @@ export const AuthApi = {
             const data = response.data;
             return data;
           } catch (error) {
-            console.log(error)
-            return error;
+            
+            if(error instanceof MyCustomError) {
+              return error
+            }
+            return {
+              statusCode:404,
+              message:"Unknown error!",
+              error:"Network error"
+            };
           }
     }
 }

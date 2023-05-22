@@ -21,22 +21,24 @@ import {
   InputLeftElement,
   Stack,
   Skeleton,
-  Card,
-  CardBody,
+  Grid,
+  GridItem,
 } from "@chakra-ui/react";
 import { FiSearch } from "react-icons/fi";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { dataSampleApi } from "@/api-client";
 import { E_sort, I_DataSample, I_PayloadDataSample } from "@/models";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useQuery } from "react-query";
 import useDebounce from "@/hooks/useDebounce";
-import { Dropdown, DropdownItem } from "@tremor/react";
 import { v4 as uuidv4 } from "uuid";
 import DashboardPieChart from "@/components/ui/DashboardPieChart";
 import useRequireAuth from "@/hooks/useRequireAuth";
 import DashboardBarChart from "@/components/ui/DashboardBarChart";
+import DashboardFilterCard from "@/components/ui/DashboardFilterCard";
+import DateRangePicker from "@/components/ui/DateRangePicker";
+import { useRecoilState } from "recoil";
+import { DateRangeState } from "@/utils/date-range.atom";
 const DataSample = () => {
   const router = useRouter();
   const session = useRequireAuth();
@@ -45,14 +47,14 @@ const DataSample = () => {
   const debouncedValue = useDebounce<string>(search, 500);
   const [pageLimit, setPageLimit] = useState("10");
   const [pageIndex, setPageIndex] = useState("1");
+  const [dateRange, setDateRange] = useRecoilState(DateRangeState);
   const { data, error, status } = useQuery({
-    queryKey: ["getDataSample", debouncedValue, sort, pageIndex, pageLimit],
+    queryKey: ["getDataSample", debouncedValue, sort, pageIndex, pageLimit, dateRange],
     queryFn: () =>
-      dataSampleApi.getListData(debouncedValue, sort, pageIndex, pageLimit),
+      dataSampleApi.getListData(debouncedValue, sort, pageIndex, pageLimit, dateRange),
     keepPreviousData: true,
   });
   const [hydrated, setHydrated] = React.useState(false);
-
   React.useEffect(() => {
     setHydrated(true);
   }, []);
@@ -82,14 +84,15 @@ const DataSample = () => {
 
   return hydrated ? (
     <Box paddingX={"30px"} className="bg-primary">
-      <Box display={"flex"} paddingY={"30px"} gap={"10px"}>
-        <Box display={"flex"} w={"50%"} justifyContent={"center"}>
+      <Grid templateColumns="repeat(2, 1fr)" gap={6} paddingY={"30px"}>
+        <GridItem w="100%" h="420px" display={"flex"} flexDirection={"column"} justifyContent={"space-between"}>
           <DashboardPieChart />
-        </Box>
-        <Box display={"flex"} w={"50%"} justifyContent={"center"}>
+          <DashboardFilterCard />
+        </GridItem>
+        <GridItem w="100%" h="420px" >
           <DashboardBarChart />
-        </Box>
-      </Box>
+        </GridItem>
+      </Grid>
       <Box marginBottom={"20px"}>
         <Heading>Data Sample</Heading>
       </Box>
@@ -105,6 +108,8 @@ const DataSample = () => {
             onChange={(e) => handleInputSearch(e.target.value)}
           />
         </InputGroup>
+
+        <DateRangePicker></DateRangePicker>
 
         <Select
           placeholder="Select option"
@@ -171,7 +176,8 @@ const DataSample = () => {
               <option value="20">No. of rows 20</option>
               <option value="50">No. of rows 50</option>
             </Select>
-            <Box display={"flex"} gap={"6px"}>
+            <Box display={"flex"} gap={"6px"} alignItems={"center"}>
+            <Text fontSize='md'>Page {pageIndex} of {data?.meta.last_page}</Text>
               <IconButton
                 variant="outline"
                 color="blue.500"

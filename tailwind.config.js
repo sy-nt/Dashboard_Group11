@@ -18,6 +18,9 @@ module.exports = {
       },
       backgroundColor:{
         "primary":"#fff"
+      },
+      inset: {
+        '56%': '56%',
       }
     },
   },
