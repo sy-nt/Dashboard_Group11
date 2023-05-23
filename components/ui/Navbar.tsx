@@ -38,7 +38,7 @@ const NavLink = ({ children }: { children: ReactNode }) => (
   </Link>
 );
 
-export default function Simple() {
+export default function Navbar() {
   const { data: session, status } = useSession();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -95,7 +95,7 @@ export default function Simple() {
                     })
                   }
                 >
-                  <Text fontSize={"sm"} fontWeight={400}>
+                  <Text fontSize={"sm"} className="text-black" fontWeight={400}>
                     Sign out
                   </Text>
                 </MenuItem>

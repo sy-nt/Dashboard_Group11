@@ -12,7 +12,7 @@ const DashboardPieChart = () => {
   });
 
   return (
-    <Card>
+    <Card className="min-h-[308px] bg-white">
       <Title>Status</Title>
       {!!data && (
         <>

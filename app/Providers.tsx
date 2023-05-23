@@ -6,6 +6,7 @@ import { SessionProvider } from "next-auth/react";
 import Navbar from "@/components/ui/Navbar";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { RecoilRoot } from "recoil";
 interface ProvidersProps {
   children: ReactNode;
 }
@@ -17,8 +18,10 @@ const Providers: FC<ProvidersProps> = ({ children }) => {
       <CacheProvider>
         <ChakraProvider>
           <SessionProvider>
+          <RecoilRoot>
             <Navbar></Navbar>
-            <Box className="bg-primary">{children}</Box>
+            <Box className="bg-primary min-h-screen">{children}</Box>
+          </RecoilRoot>
           </SessionProvider>
         </ChakraProvider>
       </CacheProvider>

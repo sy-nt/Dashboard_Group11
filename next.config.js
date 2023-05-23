@@ -4,6 +4,7 @@ const nextConfig = {
     appDir: true,
     newNextLinkBehavior: false
   },
+  // swcMinify: false,
   // serverComponentsExternalPackages: ['@tremor/react'],
 }
 

@@ -46,7 +46,8 @@ const SignUpPage: FC = () => {
   }, []);
   const handleSignup = handleSubmit(async (data) => {
     const signUp = await AuthApi.signup(data);
-    if (signUp.code || signUp.error) {
+    console.log(signUp.error)
+    if (signUp.statusCode || signUp.error) {
       toast({
         title: "Sign up",
         description: signUp.message,

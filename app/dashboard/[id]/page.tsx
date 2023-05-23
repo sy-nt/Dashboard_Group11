@@ -26,7 +26,7 @@ import {
   ModalFooter,
   Stack,
 } from "@chakra-ui/react";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import { format } from "date-fns";
 import { I_DataSampleItem } from "@/models/dataSampleItem";
 import { ChartApp } from "./chart";
@@ -49,7 +49,7 @@ const DataItem = ({ params }: { params: { id: string } }) => {
     onOpen();
   }
   return (
-    <Box paddingX={"30px"}>
+    <Box paddingX={"30px"} bg={"white"} minHeight={"100%"}>
       <Box
         marginBottom={"20px"}
         display={"flex"}
@@ -62,7 +62,7 @@ const DataItem = ({ params }: { params: { id: string } }) => {
             router.back();
           }}
           colorScheme="blue"
-          backgroundColor={"blue.500"}
+          className="text-primary hover:text-white text-xl"
         >
           <BiArrowBack></BiArrowBack>
         </Button>

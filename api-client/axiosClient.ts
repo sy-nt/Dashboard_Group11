@@ -1,9 +1,10 @@
+import { error } from 'console';
+import { MyCustomError } from "@/models/error";
 import axios from "axios";
-import { request } from "http";
-import Cookies from "js-cookie";
 import { getSession, signOut } from 'next-auth/react';
+const baseURL = process.env!.NEXT_PUBLIC_API_URL
 const axiosClient = axios.create({
-    baseURL:"http://34.236.146.54:4000",
+    baseURL: baseURL,
     headers:{
         "Content-Type": "application/json",
     }
@@ -35,15 +36,16 @@ axiosClient.interceptors.request.use(
       let errorMessage
       // Do something with response error
       if(error.response){
+        const errorData = error.response.data;
         if(error.response.status === 401){
           signOut()
         }
-        errorMessage = error.response.data
+         throw new MyCustomError(errorData.statusCode, errorData.message, errorData.error)
       }else{
         errorMessage = error;
         console.log(error)
+        throw new MyCustomError(404, 'Not found', "Network error");
       }
-      return Promise.reject(errorMessage);
     }
   );
   
